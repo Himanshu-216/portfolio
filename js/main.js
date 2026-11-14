@@ -338,6 +338,175 @@
     setTimeout(type, 600);
   }
 
+  /* ─────────── Sea: layered swell with a container ship on the horizon ─────────── */
+  const sea = $('#sea');
+  const sctx = sea.getContext('2d');
+  if (sctx) {
+    // back → front: hazy and light in the distance, dark and slow-rolling up close
+    const LAYERS = [
+      { base: 0.34, amp: 4, len: 460, speed: 0.10, rgb: '34,66,124', alpha: 0.30 },
+      { base: 0.45, amp: 6, len: 380, speed: -0.13, rgb: '26,54,108', alpha: 0.42 },
+      { base: 0.58, amp: 8, len: 310, speed: 0.17, rgb: '18,42,88', alpha: 0.58 },
+      { base: 0.72, amp: 10, len: 260, speed: -0.21, rgb: '12,30,66', alpha: 0.78 },
+      { base: 0.86, amp: 12, len: 210, speed: 0.26, rgb: '8,20,46', alpha: 0.95 },
+    ];
+    const CARGO = ['#42609f', '#3b8794', '#9c7f4c', '#437f6c', '#8d5562', '#5f79b0'];
+    let sw, sh, sraf, last = 0, placed = false;
+
+    const waveY = (L, i, x, t) =>
+      L.base * sh +
+      L.amp * Math.sin((x / L.len) * 6.283 + t * L.speed * 4) +
+      L.amp * 0.4 * Math.sin((x / (L.len * 0.37)) * 6.283 - t * L.speed * 6 + i * 1.7);
+
+    const drawLayer = (L, i, t) => {
+      sctx.beginPath();
+      sctx.moveTo(0, waveY(L, i, 0, t));
+      for (let x = 8; x <= sw + 8; x += 8) sctx.lineTo(x, waveY(L, i, x, t));
+      sctx.strokeStyle = `rgba(140,185,255,${0.05 + i * 0.025})`;
+      sctx.lineWidth = 1;
+      sctx.stroke();
+      sctx.lineTo(sw + 8, sh); sctx.lineTo(0, sh); sctx.closePath();
+      const g = sctx.createLinearGradient(0, L.base * sh - L.amp, 0, sh);
+      g.addColorStop(0, `rgba(${L.rgb},${L.alpha})`);
+      g.addColorStop(1, 'rgba(7,11,20,0.9)');
+      sctx.fillStyle = g;
+      sctx.fill();
+    };
+
+    // Each vessel is drawn facing right, origin at the waterline amidships (y up is negative).
+    const SHAPES = {
+      container(t) {
+        [[-34, 5], [-52, 6], [-52, 7]].forEach(([x0, n], r) => {
+          for (let c = 0; c < n; c++) {
+            sctx.fillStyle = CARGO[(r * 2 + c * 5) % CARGO.length];
+            sctx.fillRect(x0 + c * 18, -37 + r * 9, 17, 8);
+          }
+        });
+        sctx.fillStyle = '#6f7f9f';                       // bridge at the stern
+        sctx.fillRect(-78, -40, 20, 30);
+        sctx.fillRect(-71, -50, 5, 10);
+        sctx.fillStyle = 'rgba(255,214,140,.9)';          // lit windows
+        sctx.fillRect(-75, -36, 14, 2);
+        sctx.fillRect(-75, -30, 14, 2);
+        sctx.fillStyle = `rgba(255,107,122,${0.35 + 0.65 * (Math.sin(t * 3) > 0)})`;
+        sctx.fillRect(-70, -54, 3, 3);                    // blinking mast light
+        poly('#1b3260', [-88, -10, 92, -10, 80, 12, -80, 12]);
+        sctx.fillStyle = '#2a4a86';
+        sctx.fillRect(-87, -10, 178, 3);
+      },
+      sailboat() {
+        sctx.fillStyle = '#9fb0d0';
+        sctx.fillRect(-1, -62, 2, 56);                    // mast
+        poly('rgba(220,230,250,.88)', [3, -60, 3, -11, 30, -11]);     // mainsail
+        poly('rgba(160,190,240,.75)', [-3, -52, -3, -11, -24, -11]);  // jib
+        poly('#38d6f0', [1, -62, 1, -67, 10, -64.5]);     // pennant
+        poly('#7f93b8', [-28, -7, 32, -7, 20, 7, -22, 7]);
+        sctx.fillStyle = '#c9d6f2';
+        sctx.fillRect(-27, -7, 58, 2);
+      },
+      tug(t) {
+        sctx.fillStyle = '#42609f';                       // funnel + band
+        sctx.fillRect(-20, -34, 8, 22);
+        sctx.fillStyle = '#9c7f4c';
+        sctx.fillRect(-20, -34, 8, 4);
+        for (let i = 0; i < 3; i++) {                     // drifting smoke
+          const p = (t * 0.35 + i / 3) % 1;
+          sctx.fillStyle = `rgba(150,170,210,${0.22 * (1 - p)})`;
+          sctx.beginPath();
+          sctx.arc(-16 - p * 26, -38 - p * 22, 3 + p * 6, 0, 6.283);
+          sctx.fill();
+        }
+        sctx.fillStyle = '#7d8cab';                       // wheelhouse
+        sctx.fillRect(-8, -27, 22, 18);
+        sctx.fillStyle = 'rgba(255,214,140,.9)';
+        sctx.fillRect(-4, -23, 15, 4);
+        poly('#22385f', [-32, -9, 30, -9, 36, -3, 26, 8, -28, 8]);
+        sctx.fillStyle = '#8d5562';
+        sctx.fillRect(-32, -9, 63, 3);
+      },
+      tanker(t) {
+        sctx.fillStyle = '#5d6d8f';                       // bridge at the stern
+        sctx.fillRect(-86, -32, 22, 24);
+        sctx.fillRect(-80, -42, 6, 10);
+        sctx.fillStyle = 'rgba(255,214,140,.8)';
+        sctx.fillRect(-83, -28, 16, 2);
+        sctx.fillStyle = '#3b558c';                       // deck piping + tank domes
+        sctx.fillRect(-56, -12, 136, 2);
+        for (let x = -40; x <= 60; x += 25) {
+          sctx.beginPath(); sctx.arc(x, -8, 9, Math.PI, 0); sctx.fill();
+        }
+        sctx.fillStyle = `rgba(61,220,151,${0.3 + 0.7 * (Math.sin(t * 2.2) > 0)})`;
+        sctx.fillRect(86, -14, 3, 3);                     // bow light
+        poly('#1c2f58', [-96, -8, 100, -8, 90, 10, -90, 10]);
+        sctx.fillStyle = '#6b3f4c';
+        sctx.fillRect(-92, 4, 184, 3);
+      },
+    };
+    const poly = (fill, pts) => {
+      sctx.fillStyle = fill;
+      sctx.beginPath();
+      sctx.moveTo(pts[0], pts[1]);
+      for (let i = 2; i < pts.length; i += 2) sctx.lineTo(pts[i], pts[i + 1]);
+      sctx.closePath();
+      sctx.fill();
+    };
+
+    // layer: which swell it floats in · speed: px/s, negative sails right → left · at: start position (0–1)
+    const FLEET = [
+      { shape: 'tanker', layer: 0, speed: -4, scale: 0.5, at: 0.86, pad: 70 },
+      { shape: 'container', layer: 1, speed: 9, scale: 0.85, at: 0.3, pad: 110 },
+      { shape: 'tug', layer: 2, speed: -13, scale: 0.9, at: 0.62, pad: 60 },
+      { shape: 'sailboat', layer: 3, speed: 17, scale: 0.95, at: 0.1, pad: 50 },
+    ];
+
+    const drawVessel = (v, t) => {
+      const L = LAYERS[v.layer];
+      const k = v.scale * (sw < 720 ? 0.62 : 1);
+      const y = waveY(L, v.layer, v.x, t);
+      const tilt = Math.atan2(waveY(L, v.layer, v.x + 30, t) - waveY(L, v.layer, v.x - 30, t), 60) * 0.5;
+      sctx.save();
+      sctx.translate(v.x, y + 4 * k);
+      sctx.rotate(tilt);
+      sctx.scale(v.speed < 0 ? -k : k, k);
+      SHAPES[v.shape](t);
+      sctx.restore();
+    };
+
+    const frame = (ms) => {
+      const t = ms / 1000;
+      const dt = Math.min(t - last, 0.1); last = t;
+      for (const v of FLEET) {
+        v.x += dt * v.speed;
+        if (v.x > sw + v.pad) v.x = -v.pad;
+        else if (v.x < -v.pad) v.x = sw + v.pad;
+      }
+      sctx.clearRect(0, 0, sw, sh);
+      LAYERS.forEach((L, i) => {
+        for (const v of FLEET) if (v.layer === i) drawVessel(v, t);   // hull sits in this layer's water
+        drawLayer(L, i, t);
+      });
+      if (!reduced) sraf = requestAnimationFrame(frame);
+    };
+
+    const fit = () => {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      sw = sea.clientWidth; sh = sea.clientHeight;
+      sea.width = sw * dpr; sea.height = sh * dpr;
+      sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      for (const v of FLEET) if (!placed || v.x > sw + v.pad) v.x = sw * v.at;
+      placed = true;
+      if (reduced) frame(0);
+    };
+    fit();
+    if (!reduced) sraf = requestAnimationFrame(frame);
+    let st;
+    addEventListener('resize', () => { clearTimeout(st); st = setTimeout(fit, 150); });
+    document.addEventListener('visibilitychange', () => {
+      cancelAnimationFrame(sraf);
+      if (!document.hidden && !reduced) sraf = requestAnimationFrame(frame);
+    });
+  }
+
   /* ─────────── Background mesh (pods drifting between nodes) ─────────── */
   const canvas = $('#mesh');
   const ctx = canvas.getContext('2d');

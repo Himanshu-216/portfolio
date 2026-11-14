@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Himanshu Pant — DevOps Engineer</title>
+  <meta name="description" content="Himanshu Pant — DevOps Engineer in Pune, India. AWS, Kubernetes (EKS/GKE), Terraform, CI/CD, GitOps, observability and cloud cost optimization.">
+  <meta property="og:title" content="Himanshu Pant — DevOps Engineer">
+  <meta property="og:description" content="Building, automating and operating production cloud infrastructure on AWS and Kubernetes.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#070b14">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<!-- Shared helm-wheel shape (7 spokes, like the Kubernetes wheel) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="helm" viewBox="-120 -120 240 240">
+    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="0,-108 84.4,-67.3 105.3,24 46.9,97.3 -46.9,97.3 -105.3,24 -84.4,-67.3" stroke-width="5"/>
+      <circle r="52" stroke-width="10"/>
+      <g stroke-width="8">
+        <line y1="-14" y2="-84"/>
+        <line y1="-14" y2="-84" transform="rotate(51.43)"/>
+        <line y1="-14" y2="-84" transform="rotate(102.86)"/>
+        <line y1="-14" y2="-84" transform="rotate(154.29)"/>
+        <line y1="-14" y2="-84" transform="rotate(205.71)"/>
+        <line y1="-14" y2="-84" transform="rotate(257.14)"/>
+        <line y1="-14" y2="-84" transform="rotate(308.57)"/>
+      </g>
+    </g>
+    <circle r="14" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<!-- Background layers -->
+<div class="bg" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <canvas id="mesh"></canvas>
+  <div class="wheel wheel-a"><svg><use href="#helm"/></svg></div>
+  <div class="bg-fade"></div>
+</div>
+
+<div class="rollout" aria-hidden="true"><span id="rollout-bar"></span></div>
+
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="Home">
+    <svg class="brand-wheel"><use href="#helm"/></svg>
+    <span><b>himanshu</b><i>@prod</i></span>
+  </a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#skills">skills</a>
+    <a href="#projects">projects</a>
+    <a href="#contact">contact</a>
+  </nav>
+  <div class="ctx">
+    <span class="dot"></span><span class="ctx-label">uptime</span>
+    <span id="uptime" title="Time in production since Mar 2024">—</span>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero wrap">
+    <div class="hero-copy">
+      <p class="kind"><span class="wave">👋</span> Hey, thanks for stopping by. I'm</p>
+      <h1>Himanshu<br><em>Pant</em></h1>
+      <p class="role"><span class="prompt">&gt;</span> <span id="typed">DevOps Engineer</span><span class="caret"></span></p>
+      <p class="lede">
+        I keep things running smoothly behind the scenes. I build the infrastructure, automate
+        the repetitive stuff, make deploys a non-event, and keep an eye on the cloud bill,
+        so the team can just ship.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="#contact">get in touch →</a>
+        <a class="btn" href="assets/Himanshu_Pant_Resume.pdf" target="_blank" rel="noopener">resume.pdf ↓</a>
+      </div>
+      <ul class="status">
+        <li><span class="dot"></span> BASED IN <b>Pune, India</b></li>
+        <li>IN PRODUCTION <b>~3 years</b></li>
+      </ul>
+    </div>
+
+    <div class="term" id="term" aria-label="Interactive terminal">
+      <div class="term-bar">
+        <i></i><i></i><i></i>
+        <span>visitor@himanshu: ~</span>
+      </div>
+      <div class="term-body" id="term-body">
+        <div id="term-out" aria-live="polite"></div>
+        <label class="term-line" id="term-line">
+          <span class="ps1">visitor@cluster:~$</span>
+          <input id="term-in" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Terminal input — type help">
+        </label>
+      </div>
+      <div class="term-hints">
+        <button data-cmd="help">help</button>
+        <button data-cmd="kubectl get nodes">get nodes</button>
+        <button data-cmd="kubectl get pods -n skills">get pods</button>
+        <button data-cmd="kubectl logs career">logs</button>
+        <button data-cmd="helm list">helm list</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- METRICS -->
+  <section class="wrap metrics" aria-label="Highlights">
+    <div class="panel stat reveal">
+      <span class="stat-label">microservices_in_prod</span>
+      <strong data-count="40" data-suffix="+">40+</strong>
+      <p>event-driven services and data pipelines managed end-to-end on AWS</p>
+      <div class="spark s1"></div>
+    </div>
+    <div class="panel stat reveal">
+      <span class="stat-label">aws_bill_reduction</span>
+      <strong data-count="20" data-suffix="%">20%</strong>
+      <p>cut from the total AWS bill — over $3,000 saved every month</p>
+      <div class="spark s2"></div>
+    </div>
+    <div class="panel stat reveal">
+      <span class="stat-label">pipelines_migrated</span>
+      <strong data-count="30" data-suffix="+">30+</strong>
+      <p>Jenkins pipelines moved to GitHub Actions and standardized</p>
+      <div class="spark s3"></div>
+    </div>
+    <div class="panel stat reveal">
+      <span class="stat-label">client_projects</span>
+      <strong data-count="20" data-suffix="+">20+</strong>
+      <p>projects supported with infrastructure and delivery automation</p>
+      <div class="spark s4"></div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="wrap section" id="skills">
+    <header class="sec-head reveal">
+      <p class="cmd"><span>$</span> ls ~/toolbox</p>
+      <h2>What I work with</h2>
+    </header>
+    <div class="skills" id="skills-grid"></div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="wrap section" id="projects">
+    <header class="sec-head reveal">
+      <p class="cmd"><span>$</span> ls ~/projects</p>
+      <h2>Projects</h2>
+    </header>
+
+    <article class="panel project reveal">
+      <div class="project-copy">
+        <span class="badge live">deployed</span>
+        <h3>SSH Exporter</h3>
+        <p class="rev-role">Real-time SSH monitoring for Prometheus · 2025</p>
+        <ul class="bullets">
+          <li>An open-source <b>Prometheus exporter written in Go</b> that exposes real-time metrics on active SSH sessions.</li>
+          <li>Containerized with <b>Docker</b>, with its infrastructure provisioned through <b>Terraform</b>.</li>
+        </ul>
+        <p class="tags"><span>Go</span><span>Prometheus</span><span>Docker</span><span>Terraform</span></p>
+        <a class="btn primary" href="https://github.com/Himanshu-216/ssh-exporter" target="_blank" rel="noopener">github.com/Himanshu-216/ssh-exporter ↗</a>
+      </div>
+      <div class="pipeline" aria-hidden="true">
+        <div class="stage"><b>sshd</b><span>active sessions</span></div>
+        <div class="pipe"></div>
+        <div class="stage hot"><b>ssh-exporter</b><span>Go · Docker</span></div>
+        <div class="pipe"></div>
+        <div class="stage"><b>Prometheus</b><span>scrape /metrics</span></div>
+        <div class="pipe"></div>
+        <div class="stage"><b>Grafana</b><span>dashboards &amp; alerts</span></div>
+      </div>
+    </article>
+
+    <article class="panel edu reveal">
+      <div>
+        <span class="badge">education</span>
+        <h3>Master of Computer Applications (MCA)</h3>
+        <p class="rev-role">Govind Ballabh Pant Institute of Engineering and Technology (GBPIET), Pauri Garhwal</p>
+      </div>
+      <p class="rev-meta">Jul 2022 – Jun 2024<br><span>GPA 7.07 / 10</span></p>
+    </article>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="wrap section" id="contact">
+    <header class="sec-head reveal">
+      <p class="cmd"><span>$</span> ping himanshu</p>
+      <h2>Let's ship something</h2>
+    </header>
+
+    <div class="panel contact reveal">
+      <div class="svc-head"><span>WHERE</span><span>HOW TO REACH ME</span></div>
+      <a class="svc" href="mailto:himanshu162pnt@gmail.com">
+        <span>email</span><span>himanshu162pnt@gmail.com</span>
+      </a>
+      <a class="svc" href="https://www.linkedin.com/in/himanshu-pant-130415211" target="_blank" rel="noopener">
+        <span>linkedin</span><span>linkedin.com/in/himanshu-pant-130415211</span>
+      </a>
+      <a class="svc" href="https://github.com/Himanshu-216" target="_blank" rel="noopener">
+        <span>github</span><span>github.com/Himanshu-216</span>
+      </a>
+      <div class="svc static">
+        <span>location</span><span>Pune, India</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUTRO -->
+  <section class="wrap outro reveal">
+    <p class="cmd"><span>$</span> exit</p>
+    <h2>That's all, folks! <span class="clap">🎬</span></h2>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <svg class="brand-wheel"><use href="#helm"/></svg>
+  <p>Thanks for visiting, and for scrolling all the way down. · © Himanshu Pant</p>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
